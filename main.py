@@ -88,7 +88,7 @@ def sender():
                     conn.send(message_chunk)
                 except:
                     remove_items.append(conn)
-                    
+
             if len(remove_items) > 0:
                 LOCK.acquire()
                 for item in remove_items:
@@ -103,7 +103,7 @@ def sender():
 
 
 if __name__ == "__main__":
-    ip = input("Please input the remote ip [0.0.0.0]:")
+    ip = input("Please input the remote ip [0.0.0.0 as the server end.]:")
     if ip.strip() == "":
         ip = "0.0.0.0"
     else:
@@ -119,7 +119,8 @@ if __name__ == "__main__":
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.settimeout(5)
-        if ip in ["0.0.0.0", "127.0.0.1", getMyIP()]:
+        # , "127.0.0.1", getMyIP()
+        if ip in ["0.0.0.0"]:
             s.bind((ip, port))
             s.listen(10)
             print("This is the listen end, listening on (%s:%d)." % (ip, port))
