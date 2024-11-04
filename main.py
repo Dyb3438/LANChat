@@ -53,11 +53,12 @@ def receiver():
             except:
                 logger_output('Exception raises on (%s:%d), which wil be removed from receiver list.' % (remote_addr[0], remote_addr[1]))
                 remove_items.append(conn)
-        
-        LOCK.acquire()
-        for item in remove_items:
-            CONN_LIST.remove(item)
-        LOCK.release()
+
+        if len(remove_items) > 0:
+            LOCK.acquire()
+            for item in remove_items:
+                CONN_LIST.remove(item)
+            LOCK.release()
     return
 
 def sender():
@@ -80,9 +81,20 @@ def sender():
         message_len = len(message)
         for message_chunk_offset in range(0, message_len, 65535):
             message_chunk = message[message_chunk_offset: message_chunk_offset + 65535]
+            remove_items = []
             for conn in CONN_LIST:
-                conn.send(len(message_chunk).to_bytes(2, byteorder='big', signed=False))
-                conn.send(message_chunk)
+                try:
+                    conn.send(len(message_chunk).to_bytes(2, byteorder='big', signed=False))
+                    conn.send(message_chunk)
+                except:
+                    remove_items.append(conn)
+                    
+            if len(remove_items) > 0:
+                LOCK.acquire()
+                for item in remove_items:
+                    CONN_LIST.remove(item)
+                LOCK.release()
+
         print("Send successfully.")
     return
 
