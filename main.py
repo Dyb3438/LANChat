@@ -68,7 +68,7 @@ def sender():
             # multiples lines input
             message = b""
             while True:
-                new_message = input(">>> ")
+                new_message = input("")
                 if new_message in ["'''", '"""']:
                     break
                 message += new_message.encode('utf-8')
