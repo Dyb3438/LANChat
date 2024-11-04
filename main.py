@@ -10,8 +10,11 @@ def getMyIP():
     ip = socket.gethostbyname_ex(local_hostname)[2]
     return ip[-1]
 
-def logger_output(log):
-    print("\r[INFO] %s" % log, end="\n>>> ")
+def logger_output(log, info=True):
+    if info:
+        print("\r[INFO] %s" % log, end="\n>>> ")
+    else:
+        print("\r%s" % log, end="\n>>> ")
     return
 
 def server():
@@ -44,7 +47,7 @@ def receiver():
                     raise Exception("closed")
                 logger_output('----------------------------------')
                 logger_output('Receive from (%s:%d):' % (remote_addr[0], remote_addr[1]))
-                logger_output(message.decode('utf-8'))
+                logger_output(message.decode('utf-8'), False)
             except (TimeoutError, socket.timeout):
                 continue
             except:
