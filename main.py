@@ -24,7 +24,7 @@ def server():
             CONN_LIST.append(conn)
             logger_output("Find a new connection at (%s:%d)" % (addr[0], addr[1]))
             LOCK.release()
-        except TimeoutError:
+        except TimeoutError or socket.timeout:
             continue
     return
 
@@ -45,7 +45,7 @@ def receiver():
                 logger_output('----------------------------------')
                 logger_output('Receive from (%s:%d):' % (remote_addr[0], remote_addr[1]))
                 logger_output(message.decode('utf-8'))
-            except TimeoutError as e:
+            except TimeoutError or socket.timeout:
                 continue
             except:
                 logger_output('Exception raises on (%s:%d), which wil be removed from receiver list.' % (remote_addr[0], remote_addr[1]))
