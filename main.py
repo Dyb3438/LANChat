@@ -14,7 +14,7 @@ def logger_output(log, info=True):
     if info:
         print("\r[INFO] %s" % log, end="\n>>> ")
     else:
-        print("\r%s" % log, end="\n>>> ")
+        print("\r    \r%s" % log, end="\n>>> ")
     return
 
 def server():
