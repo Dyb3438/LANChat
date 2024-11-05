@@ -74,8 +74,11 @@ def sender():
                     break
                 message += new_message.encode('utf-8')
                 message += b'\n'
-        elif message == "exit()":
+        elif message == "exit" or message == "exit()":
             os._exit(1)
+        elif message == "clear" or message == "clear()":
+            x = os.system('clear 2>/dev/null') and os.system('cls 2> /dev/null')
+            continue
         else:
             message = message.encode('utf-8')
         message_len = len(message)
