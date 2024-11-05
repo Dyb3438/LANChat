@@ -38,7 +38,7 @@ def receiver():
         for conn in CONN_LIST:
             remote_addr = conn.getpeername()
             try:
-                message_length = conn.recv(2)
+                message_length = conn.recv(4)
                 if not message_length:
                     raise Exception("closed")
                 message_length = int.from_bytes(message_length, byteorder='big', signed=False)
@@ -82,12 +82,12 @@ def sender():
         else:
             message = message.encode('utf-8')
         message_len = len(message)
-        for message_chunk_offset in range(0, message_len, 65535):
-            message_chunk = message[message_chunk_offset: message_chunk_offset + 65535]
+        for message_chunk_offset in range(0, message_len, 4294967295):
+            message_chunk = message[message_chunk_offset: message_chunk_offset + 4294967295]
             remove_items = []
             for conn in CONN_LIST:
                 try:
-                    conn.send(len(message_chunk).to_bytes(2, byteorder='big', signed=False))
+                    conn.send(len(message_chunk).to_bytes(4, byteorder='big', signed=False))
                     conn.send(message_chunk)
                 except:
                     remove_items.append(conn)
