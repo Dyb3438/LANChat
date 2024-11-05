@@ -42,12 +42,28 @@ def receiver():
                 if not message_length:
                     raise Exception("closed")
                 message_length = int.from_bytes(message_length, byteorder='big', signed=False)
-                message = conn.recv(message_length)
-                if not message:
-                    raise Exception("closed")
+
                 logger_output('----------------------------------')
                 logger_output('Receive from (%s:%d):' % (remote_addr[0], remote_addr[1]))
-                logger_output(message.decode('utf-8'), False)
+
+                recv_message = b""
+                close_flag = False
+
+                while len(recv_message) < message_length:
+                    try:
+                        message = conn.recv(message_length - len(recv_message))
+                        if not message:
+                            close_flag = True
+                            break
+                        recv_message += message
+                    except:
+                        logger_output("Receive incompleted! Please send again")
+                        break
+                if close_flag:
+                    raise Exception('closed')
+                
+                if len(recv_message) == message_length:
+                    logger_output(recv_message.decode('utf-8'), False)
             except (TimeoutError, socket.timeout):
                 continue
             except:
